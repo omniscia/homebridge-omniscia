@@ -42,12 +42,8 @@ class TelnetConnection extends EventEmitter {
     connect() {
         this.socket = net.connect(this.port, this.host);
         this.socket.on('data', (data)  => {
-            let message = data.toString();
-            this.log.debug('TERM RCVD>>' + message.trim() + '<<');
-
-            if (message.indexOf('login:') >= 0) this.send(this.username);
-            else if (message.indexOf('password:') >= 0) this.send(this.password);
-            else this.incomingData(this.handlers, message);
+            this.log.debug('TERM RCVD>>' + data + '<<');
+            this.incomingData(this.handlers, data);
         }).on('connect', () => {
             this.log.warn("TERM CONN");
         }).on('end', () => {
@@ -57,26 +53,37 @@ class TelnetConnection extends EventEmitter {
     }
 
     incomingData(handlers, data) {
-        let lines = data.split(/\r?\n/);
-        lines.forEach((str) => {
-            if (str.startsWith(this.prompt))
-                str = str.substr(this.prompt.length);
-            if (str.endsWith(this.prompt))
-                str = str.substr(0, str.length - this.prompt.length);
-            str = str.trim();
+        if (data.indexOf('login:') >= 0) {
+            this.send(this.username);
+            return;
+        } else if (data.indexOf('password:') >= 0) {
+            this.send(this.password);
+            return;
+        }
 
-            if ( str.length > 0 ) {
-                this.log.debug('TERM DATA>>'+str+'<<');
+        let lines = data.toString().split(/\r?\n/);
+        lines.forEach((line) => {
+            line = line.trim();
+            if (line.startsWith(this.prompt))
+                line = line.substr(this.prompt.length);
+            if (line.endsWith(this.prompt))
+                line = line.substr(0, line.length - this.prompt.length);
+            line = line.trim();
+
+            if ( line.length > 0 ) {
+                this.log.debug('TERM LINE>>'+line+'<<');
 
                 Object.keys(handlers).forEach((key) => { 
-                    if (0 === str.indexOf(key)) {
-                        this.log.debug("TERM HNDL>>"+key+"::"+str+"<<")
+                    if (0 === line.indexOf(key)) {
+                        this.log.debug("TERM HNDL>>"+key+"::"+line+"<<")
 
-                        var toEmit = handlers[key].bind(this)(str);
-                        Object.keys(toEmit).forEach((emitCode) => {
-                            this.log.debug('EMITTING>>'+emitCode+'::' + toEmit[emitCode] + '<<');
-                            this.emit(emitCode, ...toEmit[emitCode]);
-                        });
+                        var toEmit = handlers[key].bind(this)(line);
+                        if ( toEmit )  {
+                            Object.keys(toEmit).forEach((emitCode) => {
+                                this.log.debug('EMITTING>>'+emitCode+'::' + toEmit[emitCode] + '<<');
+                                this.emit(emitCode, ...toEmit[emitCode]);
+                            });
+                        };
                     }
                 });
             }
@@ -93,7 +100,7 @@ class TelnetConnection extends EventEmitter {
             this.log.warn('TERM>>PASSWORD');
             this.socket.write(command + "\r\n"); 
         } else {
-            this.log.debug('TERM QUEUEING>>' + command + '<<');
+            this.log.warn('TERM QUEUEING>>' + command + '<<');
             this.sendQueue.push(command);
 
             if ( !this.sentUsername || !this.sentPassword )
@@ -101,7 +108,7 @@ class TelnetConnection extends EventEmitter {
 
             while ( this.sendQueue.length > 0 ) {
                 command = this.sendQueue.shift();                 
-                this.log.debug('TERM SENT>>' + command + '<<');
+                this.log.warn('TERM SENT>>' + command + '<<');
 
  
                 if (!/\r\n$/.test(command)) command += "\r\n";
