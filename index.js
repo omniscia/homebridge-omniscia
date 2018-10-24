@@ -1,7 +1,7 @@
 'use strict';
 
 let Service, Characteristic, Accessory, uuid;
-let LutronDmxLight, LutronWindowCovering, CoolAccessory, NeoAdapter;
+let LutronDmxLight, LutronWindowCovering, CoolAdapter, NeoAdapter;
 
 module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
@@ -18,11 +18,11 @@ module.exports = function (homebridge) {
 
   LutronDmxLight = require('./lutron-dmxlight.js')(exportedTypes);
   LutronWindowCovering = require('./lutron-windowcovering.js')(exportedTypes);
-  CoolAccessory = require('./cool-accessory.js')(exportedTypes);
-  NeoAdapter = require('./neo-adapter.js')(exportedTypes);
+  const { CoolAdapter } = require('./cool-adapter.js')(homebridge);
+  const { NeoAdapter } = require('./neo-adapter.js')(homebridge);
 
   homebridge.registerAccessory('homebridge-omniscia', 'LutronDmxLight', LutronDmxLight, true);
   homebridge.registerAccessory('homebridge-omniscia', 'LutronWindowCovering', LutronWindowCovering, true);
-  homebridge.registerAccessory('homebridge-omniscia', 'CoolAccessory', CoolAccessory, true);
+  homebridge.registerAccessory('homebridge-omniscia', 'CoolAdapter', CoolAdapter, true);
   homebridge.registerAccessory('homebridge-omniscia', 'NeoAdapter', NeoAdapter, true);
 };
