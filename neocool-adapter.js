@@ -28,7 +28,7 @@ class NeoCoolAdapter extends OmnisciaAdapter {
 
         this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;
         this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS;
-        this.temperatureCheckInterval = 5000;
+        this.temperatureCheckInterval = 10000;
 
         this.refreshDataFromDevice();
 
@@ -44,7 +44,7 @@ class NeoCoolAdapter extends OmnisciaAdapter {
     }
 
     refreshDataFromDevice() { 
-this.log.error("REFRESHING DATA");
+        this.log.warn("REFRESHING DATA");
         if ( !this.neoConnection ) return this.log.error("Using this.neoConnection before it is ready");
         if ( !this.coolConnection ) return this.log.error("Using this.coolConnection before it is ready");
 
@@ -70,7 +70,7 @@ this.log.error("REFRESHING DATA");
     }
 
     writeDataToDevice() {
-this.log.error("WRITING DATA");
+        this.log.warn("WRITING DATA");
         if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.HEAT || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.AUTO ) {
             this.neoConnection.setStandby(this.neoId, false);
             this.neoConnection.setTargetTemperature(this.neoId, this.heatingThresholdTemperature);
