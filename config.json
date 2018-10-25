@@ -54,7 +54,12 @@
     { "accessory": "NeoAdapter", "id": "Bedroom",          "host": "192.168.0.219", "name": "Bedroom Heating" },
     { "accessory": "NeoAdapter", "id": "Lounge",           "host": "192.168.0.219", "name": "Lounge Heating" },
     { "accessory": "NeoAdapter", "id": "Guest Room",       "host": "192.168.0.219", "name": "Guest Room Heating" },
-    { "accessory": "NeoAdapter", "id": "Kitchen Bathroom", "host": "192.168.0.219", "name": "Kitchen Bathroom Heating" }
+    { "accessory": "NeoAdapter", "id": "Kitchen Bathroom", "host": "192.168.0.219", "name": "Kitchen Bathroom Heating" },
+
+    { "accessory": "NeoCoolAdapter", "neoId": "Living Room", "neoHost": "192.168.0.219", "coolId": "L4.000", "coolHost": "192.168.0.142", "name": "Living Room Thermostat" },
+    { "accessory": "NeoCoolAdapter", "neoId": "Bedroom",     "neoHost": "192.168.0.219", "coolId": "L4.000", "coolHost": "192.168.0.143", "name": "Bedroom Thermostat" },
+    { "accessory": "NeoCoolAdapter", "neoId": "Lounge",      "neoHost": "192.168.0.219", "coolId": "L4.000", "coolHost": "192.168.0.144", "name": "Lounge Thermostat" },
+    { "accessory": "NeoCoolAdapter", "neoId": "Guest Room",  "neoHost": "192.168.0.219", "coolId": "L4.000", "coolHost": "192.168.0.145", "name": "Guest Room Thermostat" }
   ],
   "platforms": [
     {

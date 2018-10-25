@@ -45,11 +45,18 @@ class NeoCoolAdapter extends OmnisciaAdapter {
 
     refreshDataFromDevice() { 
 this.log.error("REFRESHING DATA");
-        if ( !this.coolConnection ) return this.log.error("Using this.coolConnection before it is ready");
         if ( !this.neoConnection ) return this.log.error("Using this.neoConnection before it is ready");
+        if ( !this.coolConnection ) return this.log.error("Using this.coolConnection before it is ready");
+
+        this.neoConnection.refreshData();
+        this.heatingThresholdTemperature = this.neoConnection.getTargetTemperature(this.neoId);
 
         this.coolConnection.refreshData();
-        this.coolingThresholdTemperature = this.coolConnection.getTargetTemperature(this.coolId);
+        //this.coolingThresholdTemperature = this.coolConnection.getTargetTemperature(this.coolId);
+        if ( !this.coolingThresholdTemperature ) {
+           this.coolingThresholdTemperature = this.heatingThresholdTemperature + 2
+           this.log.error("Defaulting coolingThresholdTemperature to ", this.coolingThresholdTemperature);
+        }
 
         this.neoConnection.refreshData();
         this.heatingThresholdTemperature = this.neoConnection.getTargetTemperature(this.neoId);
@@ -64,23 +71,26 @@ this.log.error("REFRESHING DATA");
 
     writeDataToDevice() {
 this.log.error("WRITING DATA");
+        if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.HEAT || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.AUTO ) {
+            this.neoConnection.setStandby(this.neoId, false);
+            this.neoConnection.setTargetTemperature(this.neoId, this.heatingThresholdTemperature);
+        }
         if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.COOL || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.AUTO ) {
-            if ( this.currentTemperature > this.coolingThresholdTemperature )  {
+            //this.coolConnection.setStandby(this.coolId, false);
+            //this.coolConnection.setTargetTemperature(this.coolId, this.coolingThresholdTemperature);
+
+            if ( this.getCurrentTemperature() > this.coolingThresholdTemperature )  {
                 this.coolConnection.setStandby(this.coolId, false);
                 this.coolConnection.setTargetTemperature(this.coolId, 1);
             } else {
                 this.coolConnection.setStandby(this.coolId, true);
             }
         }
-        if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.HEAT || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.AUTO ) {
-            this.neoConnection.setStandby(this.neoId, false);
-            this.neoConnection.setTargetTemperature(this.neoId, this.heatingThresholdTemperature);
-        }
 
-        if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.COOL || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF  )
-            this.neoConnection.setStandby(this.neoId, true);
         if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.HEAT || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF )
             this.coolConnection.setStandby(this.coolId, true);
+        if ( this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.COOL || this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF  )
+            this.neoConnection.setStandby(this.neoId, true);
     }
 
     
