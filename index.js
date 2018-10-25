@@ -18,12 +18,14 @@ module.exports = function (homebridge) {
   const { LutronRgbwAdapter } = require('./lutron-rgbw-adapter.js')(homebridge);
   const { LutronShadeAdapter } = require('./lutron-shade-adapter')(homebridge);
   const { CoolAdapter } = require('./cool-adapter')(homebridge);
-  const { NeoAdapter } = require('./neo-adapter')(homebridge);
+  const { NeoStatAdapter } = require('./neostat-adapter')(homebridge);
+  const { NeoPlugAdapter } = require('./neoplug-adapter')(homebridge);
   const { NeoCoolAdapter } = require('./neocool-adapter')(homebridge);
 
   homebridge.registerAccessory('homebridge-omniscia', 'LutronRgbwAdapter', LutronRgbwAdapter, true);
   homebridge.registerAccessory('homebridge-omniscia', 'LutronShadeAdapter', LutronShadeAdapter, true);
   homebridge.registerAccessory('homebridge-omniscia', 'CoolAdapter', CoolAdapter, true);
-  homebridge.registerAccessory('homebridge-omniscia', 'NeoAdapter', NeoAdapter, true);
+  homebridge.registerAccessory('homebridge-omniscia', 'NeoStatAdapter', NeoStatAdapter, true);
+  homebridge.registerAccessory('homebridge-omniscia', 'NeoPlugAdapter', NeoPlugAdapter, true);
   homebridge.registerAccessory('homebridge-omniscia', 'NeoCoolAdapter', NeoCoolAdapter, true);
 };

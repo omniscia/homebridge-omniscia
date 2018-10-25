@@ -111,7 +111,8 @@ class NeoConnection {
     getCurrentTemperature(id) {
         if (!this.deviceData[id]) {
             this.log.error("Asking for current temperature before exists for id",id);
-            this.deviceData[id] = { };
+            this.refreshData();
+            return;
         }
         return this.deviceData[id].CURRENT_TEMPERATURE;
     }
@@ -119,7 +120,8 @@ class NeoConnection {
     getTargetTemperature(id) {
         if (!this.deviceData[id]) {
             this.log.error("Asking for target temperature before exists for id",id);
-            this.deviceData[id] = { };
+            this.refreshData();
+            return;
         }
         return this.deviceData[id].CURRENT_SET_TEMPERATURE;
     }
@@ -128,6 +130,20 @@ class NeoConnection {
         if (this.getTargetTemperature(id) == temp) return;
 
         this.setValue(id, 'SET_TEMP', temp); 
+    }
+
+    isPlugOn(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for plug status before exists for id",id);
+            this.refreshData();
+            return;
+        }
+        return (this.deviceData[id].TIME_CLOCK_OVERIDE_BIT || this.deviceData[id].TIMER);
+    }
+
+    setPlugOn(id, on) {
+        if ( on ) this.setValue(id, 'TIMER_ON')
+        else      this.setValue(id, 'TIMER_OFF');
     }
 };
 
