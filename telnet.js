@@ -61,13 +61,10 @@ class TelnetConnection extends EventEmitter {
             return;
         }
 
-        let lines = data.toString().split(/\r?\n/);
-        lines.forEach((line) => {
-            line = line.trim();
-            if (line.startsWith(this.prompt))
-                line = line.substr(this.prompt.length);
-            if (line.endsWith(this.prompt))
-                line = line.substr(0, line.length - this.prompt.length);
+        let sections = data.toString().split(this.prompt);
+        sections.forEach((section) => {
+          let lines = section.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
+          lines.forEach((line) => {
             line = line.trim();
 
             if ( line.length > 0 ) {
@@ -87,6 +84,7 @@ class TelnetConnection extends EventEmitter {
                     }
                 });
             }
+          });
         });
     }
 
