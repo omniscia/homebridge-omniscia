@@ -110,8 +110,8 @@ const hsv2rgb = function (h, s, v) {
   s = s/100;
   v = v/100;
 
-  if (s === 0.0) {
-    return [v/100*255, v/100*255, v/100*255]
+  if (s == 0) {
+    return {r:v*255, g:v*255, b:v*255};
   }
   let c = v * s;
   let _h = h / 60;
@@ -121,8 +121,8 @@ const hsv2rgb = function (h, s, v) {
   let rgb = [0, 0, 0];
   let diff = v - c;
   if (h == null) {
-    let val = parseInt((diff*1) * 255, 10);
-    return [val, val, val];
+    let val = (diff*1) * 255;
+    return { r:val, g:val, b:val};
   }
   switch(phd) {
     case 0:
@@ -166,6 +166,7 @@ const hsv2rgb = function (h, s, v) {
 };
 
 const rgb2rgbw = function (Ri, Gi, Bi) {
+
   tM = Math.max(Ri, Math.max(Gi, Bi));
 
   //If the maximum value is 0, immediately return pure black.
@@ -214,8 +215,10 @@ const rgbw2rgb = function (Ri, Gi, Bi, Wi) {
 }
 
 const rgbw2hsv = function (r, g, b, w) {
-  if ( w == null ) return rgb2hsv(r, g, b);
+  if ( w == null )
+      rgb = {r:r, g:g, b:b};
+  else
+      rgb = rgbw2rgb(r, g, b, w);
 
-  rgb = rgbw2rgb(r, g, b, w);
   return rgb2hsv(rgb.r, rgb.g, rgb.b);
 };
