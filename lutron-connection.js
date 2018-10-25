@@ -49,12 +49,13 @@ class LutronConnection {
     }
 
     refreshData(id, setting) {
+        if (id == null) return this.log.error("ID can't be null")
+        else if (setting == null) return this.log.error("Setting can't be null")
+
         if ( Date.now() < (this.lastRefreshed[id] + 500) )  return;
         this.lastRefreshed[id] = Date.now();
 
-        if (id == null) this.log.error("ID can't be null")
-        else if (setting == null) this.log.error("Setting can't be null")
-        else this.sendCommand('?OUTPUT,' + id + ',' + setting);
+        this.sendCommand('?OUTPUT,' + id + ',' + setting);
     }
 
     outputResponseHandler(data) { 
@@ -80,8 +81,9 @@ class LutronConnection {
     getLevel(id) {
         this.refreshLevel(id);
         if (!this.deviceData[id]) {
-            this.log.error("Asking for level before exists on id",id); 
-            this.deviceData[id] = { };
+            this.log.error("Asking for level before exists for id",id); 
+            this.refreshLevel(id);
+            return;
         }
 
         return parseInt(this.deviceData[id][1]); 
@@ -96,8 +98,9 @@ class LutronConnection {
     getDmxLevel(id) {
         this.refreshDmxLevel(id);
         if (!this.deviceData[id]) {
-            this.log.error("Asking for dmxLevel before exists on id",id);
-            this.deviceData[id] = { };
+            this.log.error("Asking for dmxLevel before exists for id",id);
+            this.refreshDmxLevel(id);
+            return;
         }
          
         return parseInt(this.deviceData[id][17]);  

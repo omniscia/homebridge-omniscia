@@ -67,11 +67,13 @@ class NeoConnection {
         let fullData = this.jsonReadBuffer + data.substr( 0, data.length - 1 );
         this.jsonReadBuffer = '';
 
-        return { json: [ fullData ] };
+        return { json: fullData.split(/\u0000/) };
     };
 
-    jsonEventHandler(...response) {
-        this.log.debug("JSON>"+response+"<<");
+    jsonEventHandler(...responses) {
+      this.log.debug("JSON>"+responses+"<<");
+
+      responses.forEach((response) => {
         var data;
         try {
             data = JSON.parse(response);
@@ -93,19 +95,40 @@ class NeoConnection {
                 }.bind(this));
             }.bind(this));
         };
+      });
     }
 
     isHeating(id) { return this.deviceData[id].HEATING; }
     isStandby(id) { return this.deviceData[id].STANDBY; }
 
     setStandby(id, standby) {
+        if (this.isStandby(id) == standby) return;
+
         if (standby) this.setValue(id, 'FROST_ON');
         else         this.setValue(id, 'FROST_OFF');
     }
 
-    getCurrentTemperature(id) { return this.deviceData[id].CURRENT_TEMPERATURE; }
-    getTargetTemperature(id) { return this.deviceData[id].CURRENT_SET_TEMPERATURE; }
-    setTargetTemperature(id, temp) { this.setValue(id, 'SET_TEMP', temp); }
+    getCurrentTemperature(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for current temperature before exists for id",id);
+            this.deviceData[id] = { };
+        }
+        return this.deviceData[id].CURRENT_TEMPERATURE;
+    }
+
+    getTargetTemperature(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for target temperature before exists for id",id);
+            this.deviceData[id] = { };
+        }
+        return this.deviceData[id].CURRENT_SET_TEMPERATURE;
+    }
+
+    setTargetTemperature(id, temp) { 
+        if (this.getTargetTemperature(id) == temp) return;
+
+        this.setValue(id, 'SET_TEMP', temp); 
+    }
 };
 
 module.exports = NeoConnection;

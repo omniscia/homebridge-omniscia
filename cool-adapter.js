@@ -13,14 +13,11 @@ module.exports = homebridge => {
     
 class CoolAdapter extends OmnisciaAdapter {
     constructor(log, config) {
-        let filterMaintenanceService = new Service.FilterMaintenance();
         let thermostatService = new Service.Thermostat();
     
         super(log, config,
             CoolConnection.getInstance(log, config['host'], config['port'], config['username'], config['password']),
-            [ filterMaintenanceService, thermostatService ]);
-
-        this.bindCharacteristic(filterMaintenanceService, Characteristic.FilterChangeIndication, this.getFilterChangeIndication, null, "FilterChangeIndication");
+            [ thermostatService ]);
 
         this.bindCharacteristic(thermostatService, Characteristic.CurrentHeatingCoolingState, this.getCurrentHeatingCoolingState, null, "CurrentHeatingCoolingState",
             {validValues: [Characteristic.TargetHeatingCoolingState.OFF, Characteristic.TargetHeatingCoolingState.COOL]});

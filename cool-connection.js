@@ -7,6 +7,7 @@ let ConnectionInstances = {};
 class CoolConnection {
     constructor(log, host, port, username, password) {
         this.log = log;
+        this.host = host;
 
         this.deviceData = { };
         this.jsonReadBuffer = '';
@@ -39,13 +40,13 @@ class CoolConnection {
     }
 
     sendCommand(command) {
-        this.log.warn("WRITING>>" + JSON.stringify(command) + "<<");
-        this.telnetConnection.send(command);
+        this.log.warn("WRITING>>" + command + "<<");
+        this.telnetConnection.send(command.toString());
     }
 
     setValue(id, setting, value) {
         let command = setting + ' ' + id;
-        if ( value ) command += (' ' + value);
+        if ( value != null ) command += (' ' + value);
         this.sendCommand(command);
     }
 
@@ -67,7 +68,7 @@ class CoolConnection {
         return { error: [ data ] };
     }
 
-    okEventHandler(data) { this.log.debug("OKAY>>"+data+"<<"); }
+    okEventHandler(data) { this.log.warn("OKAY>>"+data+"<<"+this.host); }
     errorEventHandler(data) { this.log.error("ERROR>>"+data+"<<"); }
 
     statsEventHandler(id, ...parameters) {
@@ -99,9 +100,11 @@ class CoolConnection {
     getOperationMode(id) { this.deviceData[id].operationMode; }
 
     isCooling(id) { return this.deviceData[id].operationMode == "Cool" && this.deviceData[id].isOn; };
-    isStandby(id) { return this.deviceData[id].operationMode != "Cool" || this.deviceData[id].isOff; };
+    isStandby(id) { return !this.isCooling(id); }
 
     setStandby(id, standby) {
+        if (this.isStandby(id) == standby) return;
+
         if (standby) this.setValue(id, 'off');
         else {
             this.setValue(id, 'on');
@@ -109,9 +112,29 @@ class CoolConnection {
         }
     }
 
-    getCurrentTemperature(id) { return this.deviceData[id].roomTemp; }
-    getTargetTemperature(id) { return this.deviceData[id].setTemp; }
-    setTargetTemperature(id, temp) { this.setValue(id, 'temp', temp); }
+    getCurrentTemperature(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for current temperature before exists for id",id);
+            this.refreshData();
+            return;
+        }
+        return this.deviceData[id].roomTemp;
+    }
+
+    getTargetTemperature(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for target temperature before exists for id",id);
+            this.refreshData();
+            return;
+        }
+        return this.deviceData[id].setTemp;
+    }
+
+    setTargetTemperature(id, temp) {
+        if (this.getTargetTemperature(id) == temp) return;
+
+        this.setValue(id, 'temp', temp); 
+    }
 
     getTemperatureDisplayUnits(id) { return this.deviceData[id].tempUnits; }
     setTemperatureDisplayUnits(id, val) { this.sendCommand('set deg',val); }
