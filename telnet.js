@@ -61,12 +61,12 @@ class TelnetConnection extends EventEmitter {
             return;
         }
 
-        let sections = data.toString().split(this.prompt);
+        data = data.toString();
+
+        let sections = this.prompt.trim().length > 0 ? data.split(this.prompt) : [ data ];
         sections.forEach((section) => {
           let lines = section.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
           lines.forEach((line) => {
-            line = line.trim();
-
             if ( line.length > 0 ) {
                 this.log.debug('TERM LINE>>'+line+'<<');
 
@@ -98,7 +98,7 @@ class TelnetConnection extends EventEmitter {
             this.log.warn('TERM>>PASSWORD');
             this.socket.write(command + "\r\n"); 
         } else {
-            this.log.warn('TERM QUEUEING>>' + command + '<<');
+            this.log.debug('TERM QUEUEING>>' + command + '<<');
             this.sendQueue.push(command);
 
             if ( !this.sentUsername || !this.sentPassword )

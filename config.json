@@ -1,0 +1,72 @@
+{
+  "bridge": {
+    "name": "Homebridge",
+    "username": "CC:22:3D:E3:CE:30",
+    "port": 51826,
+    "pin": "031-45-154"
+  },
+  "accessories": [
+    { "accessory": "LutronRgbwAdapter", "name": "Roof Floor",            "rId":150, "gId":151, "bId":152 },
+    { "accessory": "LutronRgbwAdapter", "name": "Roof Tub",              "rId":147, "gId":148, "bId":149 },
+    { "accessory": "LutronRgbwAdapter", "name": "Roof Fire",             "rId": 20, "gId":145, "bId":146 },
+    { "accessory": "LutronRgbwAdapter", "name": "Handrail 3",            "rId":137, "gId":138, "bId":139 },
+    { "accessory": "LutronRgbwAdapter", "name": "Lounge Bookshelf",      "rId":132, "gId":133, "bId":134, "wId":135 },
+    { "accessory": "LutronRgbwAdapter", "name": "Lounge Cabinets",       "rId": 67, "gId": 70, "bId": 71, "wId": 73 },
+    { "accessory": "LutronRgbwAdapter", "name": "Bar Wall",              "rId": 95, "gId": 96, "bId": 97, "wId": 98 },
+    { "accessory": "LutronRgbwAdapter", "name": "Bar Ceiling",           "rId": 63, "gId": 64, "bId": 65, "wId": 66 },
+    { "accessory": "LutronRgbwAdapter", "name": "Guest Room Shelf",      "rId": 91, "gId": 92, "bId": 93, "wId": 94 },
+    { "accessory": "LutronRgbwAdapter", "name": "Handrail 2",            "rId":128, "gId":129, "bId":130, "wId":131 },
+    { "accessory": "LutronRgbwAdapter", "name": "Landing 2 Bookshelf",   "rId":124, "gId":125, "bId":126, "wId":127 },
+    { "accessory": "LutronRgbwAdapter", "name": "Landing 2 Ceiling",     "rId":120, "gId":121, "bId":122, "wId":123 },
+    { "accessory": "LutronRgbwAdapter", "name": "Bedroom Ceiling",       "rId":162, "gId":163, "bId":164, "wId":165 },
+    { "accessory": "LutronRgbwAdapter", "name": "Bedroom Wall",          "rId":158, "gId":159, "bId":160, "wId":161 },
+    { "accessory": "LutronRgbwAdapter", "name": "Handrail 1",            "rId":116, "gId":117, "bId":118, "wId":119 },
+    { "accessory": "LutronRgbwAdapter", "name": "Living Room Wall",      "rId": 55, "gId": 83, "bId": 84, "wId": 87 },
+    { "accessory": "LutronRgbwAdapter", "name": "Living Room Cabinet",   "rId":153, "gId":154, "bId":155 },
+    { "accessory": "LutronRgbwAdapter", "name": "Living Room Bookshelf", "rId":111, "gId":112, "bId":113, "wId":114 },
+    { "accessory": "LutronRgbwAdapter", "name": "Handrail Ground",       "rId":107, "gId":108, "bId":109, "wId":110 },
+
+    { "accessory": "LutronShadeAdapter", "name": "Lounge Blackouts", "id":80 },
+    { "accessory": "LutronShadeAdapter", "name": "Lounge Shades", "id":79 },
+    { "accessory": "LutronShadeAdapter", "name": "Guest Room Ensuite Blackouts", "id":90 },
+    { "accessory": "LutronShadeAdapter", "name": "Guest Room Ensuite Shades", "id":82 },
+    { "accessory": "LutronShadeAdapter", "name": "Guest Room Blackouts", "id":81 },
+    { "accessory": "LutronShadeAdapter", "name": "Guest Room Shades", "id":78 },
+    { "accessory": "LutronShadeAdapter", "name": "Ensuite Blackouts", "id":104 },
+    { "accessory": "LutronShadeAdapter", "name": "Ensuite Shades", "id":103 },
+    { "accessory": "LutronShadeAdapter", "name": "Bedroom Wardrobe Shades", "id":100 },
+    { "accessory": "LutronShadeAdapter", "name": "Bedroom Wardrobe Blackouts", "id":99 },
+    { "accessory": "LutronShadeAdapter", "name": "Bedroom Bay Blackouts", "id":102 },
+    { "accessory": "LutronShadeAdapter", "name": "Bedroom Bay Shades", "id":101 },
+    { "accessory": "LutronShadeAdapter", "name": "Living Room Side Shades", "id":59 },
+    { "accessory": "LutronShadeAdapter", "name": "Living Room Side Blackouts", "id":58 },
+    { "accessory": "LutronShadeAdapter", "name": "Living Room Center Shades", "id":57 },
+    { "accessory": "LutronShadeAdapter", "name": "Living Room Center Blackouts", "id":56 },
+    { "accessory": "LutronShadeAdapter", "name": "Kitchen Blackouts", "id":167 },
+    { "accessory": "LutronShadeAdapter", "name": "Kitchen Shades", "id":166 },
+
+    { "accessory": "CoolAdapter", "id": "L4.000", "host": "192.168.0.142", "name": "Living Room Cooling" },
+    { "accessory": "CoolAdapter", "id": "L4.000", "host": "192.168.0.143", "name": "Bedroom Cooling" },
+    { "accessory": "CoolAdapter", "id": "L4.000", "host": "192.168.0.144", "name": "Lounge Cooling" },
+    { "accessory": "CoolAdapter", "id": "L4.000", "host": "192.168.0.145", "name": "Guest Room Cooling" },
+
+    { "accessory": "NeoAdapter", "id": "Living Room",      "host": "192.168.0.219", "name": "Living Room Heating" },
+    { "accessory": "NeoAdapter", "id": "Bedroom",          "host": "192.168.0.219", "name": "Bedroom Heating" },
+    { "accessory": "NeoAdapter", "id": "Lounge",           "host": "192.168.0.219", "name": "Lounge Heating" },
+    { "accessory": "NeoAdapter", "id": "Guest Room",       "host": "192.168.0.219", "name": "Guest Room Heating" },
+    { "accessory": "NeoAdapter", "id": "Kitchen Bathroom", "host": "192.168.0.219", "name": "Kitchen Bathroom Heating" }
+  ],
+  "platforms": [
+    {
+        "platform": "config",
+        "name": "Config",
+        "port": 8080,
+        "sudo": true,
+        "restart": "sudo -n systemctl restart homebridge",
+        "log": {
+        "method": "systemd",
+        "service": "homebridge"
+        }
+    }
+  ]
+}

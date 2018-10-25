@@ -38,7 +38,7 @@ class LutronConnection {
     }
 
     sendCommand(command) {
-        this.log.warn("WRITE>>" + JSON.stringify(command) + "<<");
+        this.log.warn("WRITING>>" + JSON.stringify(command) + "<<");
         this.telnetConnection.send(command);
     }
 
@@ -68,7 +68,7 @@ class LutronConnection {
     errorEventHandler(data) { this.log.error("ERROR>>"+data+"<<"); }
 
     updateEventHandler(id, setting, ...values) {
-        this.log.warn('UPDATE::' + id + '>>' + setting + '::' + values + '<<');
+        this.log.debug('READING>>' + id + '::' + setting + '::' + values + '<<');
 
         if ( !this.deviceData[id] ) this.deviceData[id] = { };
         this.deviceData[id][setting] = (values.length == 1 ? values[0] : values);
@@ -96,7 +96,7 @@ class LutronConnection {
     getDmxLevel(id) {
         this.refreshDmxLevel(id);
         if (!this.deviceData[id]) {
-            this.log.error("Asking for level before exists on id",id);
+            this.log.error("Asking for dmxLevel before exists on id",id);
             this.deviceData[id] = { };
         }
          

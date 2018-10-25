@@ -39,7 +39,7 @@ class CoolConnection {
     }
 
     sendCommand(command) {
-        this.log.warn("WRITE>>" + JSON.stringify(command) + "<<");
+        this.log.warn("WRITING>>" + JSON.stringify(command) + "<<");
         this.telnetConnection.send(command);
     }
 
@@ -67,11 +67,11 @@ class CoolConnection {
         return { error: [ data ] };
     }
 
-    okEventHandler(data) { this.log.warn("OKAY>>"+data+"<<"); }
+    okEventHandler(data) { this.log.debug("OKAY>>"+data+"<<"); }
     errorEventHandler(data) { this.log.error("ERROR>>"+data+"<<"); }
 
     statsEventHandler(id, ...parameters) {
-        this.log.warn('STATS::' + id + '>>' + parameters + '<<');
+        this.log.warn('READING>>' + id + '>>' + parameters + '<<');
 
         if (!parameters || parameters.length < 7) {
             this.log.debug('STATS::READ INCOMPLETE - RETRY');

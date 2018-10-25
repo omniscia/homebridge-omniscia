@@ -51,7 +51,6 @@ class LutronRgbwAdapter extends OmnisciaAdapter {
 
         this.log.warn("WRITING>>"+JSON.stringify(this.homekitData));
         this.log.warn("WRITING>>",JSON.stringify(colors));
-        this.log.warn("WRITING>>",Math.round(colors.r/255*DEVICE_RGBW_MAX), Math.round(colors.g/255*DEVICE_RGBW_MAX), Math.round(colors.b/255*DEVICE_RGBW_MAX), Math.round(colors.w/255*DEVICE_RGBW_MAX));
 
         this.deviceConnection.setDmxLevel(this.rId, Math.round(colors.r/255*DEVICE_RGBW_MAX));
         this.deviceConnection.setDmxLevel(this.gId, Math.round(colors.g/255*DEVICE_RGBW_MAX));

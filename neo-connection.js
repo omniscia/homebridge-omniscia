@@ -38,7 +38,7 @@ class NeoConnection {
     }
 
     sendCommand(command) {
-        this.log.warn("WRITE>>" + JSON.stringify(command) + "<<");
+        this.log.warn("WRITING>>" + JSON.stringify(command) + "<<");
         this.telnetConnection.send(JSON.stringify(command) + new Buffer([0]));
     }
 
@@ -81,6 +81,8 @@ class NeoConnection {
 
         if (data != null && data.devices != null) {
             data.devices.forEach(function(device) {
+                this.log.warn('READING>>'+device.device+'<');
+
                 if (!this.deviceData[device.device]) this.deviceData[device.device] = { };
 
                 Object.keys(device).forEach(function(key) {
@@ -89,15 +91,11 @@ class NeoConnection {
                     else
                         this.deviceData[device.device][key] = device[key];
                 }.bind(this));
-
-                this.log.warn('Loaded device data for',device.device);
             }.bind(this));
         };
     }
 
-    isHeating(id) {
-this.log.warn(id);
- return this.deviceData[id].HEATING; }
+    isHeating(id) { return this.deviceData[id].HEATING; }
     isStandby(id) { return this.deviceData[id].STANDBY; }
 
     setStandby(id, standby) {

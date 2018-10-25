@@ -29,7 +29,7 @@ class OmnisciaAdapter {
         if (!desc)
             desc = characteristic.toString();
 
-        this.log.warn("BINDING>>", desc, getFunc ? "+get" : "", setFunc ? "+set" : ":");
+        this.log.warn("BINDING>>"+desc+"::", getFunc ? "+get" : "", setFunc ? "+set" : "");
 
         const actual = service.getCharacteristic(characteristic)
             .on('get', function (callback) {
