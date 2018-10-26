@@ -138,7 +138,7 @@ class NeoConnection {
             this.refreshData();
             return;
         }
-        return (this.deviceData[id].TIME_CLOCK_OVERIDE_BIT || this.deviceData[id].TIMER);
+        return (this.deviceData[id].TIME_CLOCK_OVERIDE_BIT && this.deviceData[id].TIMER);
     }
 
     setPlugOn(id, on) {
