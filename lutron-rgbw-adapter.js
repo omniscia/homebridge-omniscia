@@ -46,8 +46,11 @@ class LutronRgbwAdapter extends OmnisciaAdapter {
     }
 
     writeDataToDevice() {
-        let colors = hsv2rgb(this.homekitData.hue, this.homekitData.saturation, this.homekitData.isOn?this.homekitData.brightness:0);
-        if (this.wId) colors = rgb2rgbw(colors.r, colors.g, colors.b);
+        let colors;
+        if (this.wId)
+            colors = hsv2rgbw(this.homekitData.hue, this.homekitData.saturation, this.homekitData.isOn?this.homekitData.brightness:0);
+        else
+            colors = hsv2rgb (this.homekitData.hue, this.homekitData.saturation, this.homekitData.isOn?this.homekitData.brightness:0);
 
         this.log.warn("WRITING>>"+JSON.stringify(this.homekitData));
         this.log.warn("WRITING>>",JSON.stringify(colors));
@@ -55,7 +58,8 @@ class LutronRgbwAdapter extends OmnisciaAdapter {
         this.deviceConnection.setDmxLevel(this.rId, Math.round(colors.r/255*DEVICE_RGBW_MAX));
         this.deviceConnection.setDmxLevel(this.gId, Math.round(colors.g/255*DEVICE_RGBW_MAX));
         this.deviceConnection.setDmxLevel(this.bId, Math.round(colors.b/255*DEVICE_RGBW_MAX));
-        if (this.wId) this.deviceConnection.setDmxLevel(this.wId, Math.round(colors.w/255*DEVICE_RGBW_MAX));
+        //if (this.wId)
+            this.deviceConnection.setDmxLevel(this.wId, Math.round(colors.w/255*DEVICE_RGBW_MAX));
     }
 
     getOn         () { return this.getBrightness() > 0; }
@@ -105,6 +109,55 @@ const rgb2hsv = function (red, green, blue) {
 
   return { h:hue, s:saturation, v:value };
 };
+
+const hsv2rgbw = function (h, s, v) {
+    v = v / 100.0;
+
+    let r, g, b, w;
+    let C, Z = 0;
+
+    if ( s >= 50 ) {
+        C = 100 * v;
+        w = v * (200 - 2*s);
+    } else {
+        C = 2 * s * v;
+        w = v * 100;
+    }
+
+    if ( h < 60 ) {
+        r = C;
+        g = C * h / 60;
+        b = Z;
+    } else if ( h < 120 ) {
+        h = 120 - h;
+        r = C * h / 60;
+        g = C;
+        b = Z;
+    } else if ( h < 180 ) {
+        h -= 120;
+        r = Z;
+        g = C;
+        b = C * h / 60;
+    } else if ( h < 240 ) {
+        h = 240 - h;
+        r = Z;
+        g = C * h / 60;
+        b = C;
+    } else if ( h < 300 ) {
+        h -= 240;
+        r = C * h / 60;
+        g = Z;
+        b = C;
+    } else {
+        h = 360 - h;
+        r = C;
+        g = Z;
+        b = C * h / 60;
+    }
+
+    return {r: 2.55*r, g: 2.55*g, b: 2.55*b, w: 2.55*w};
+};
+
 
 const hsv2rgb = function (h, s, v) {
   s = s/100;
@@ -163,46 +216,6 @@ const hsv2rgb = function (h, s, v) {
   let blue = rgb[2]*255;
 
   return { r:red, g:green, b:blue };
-};
-
-const rgb2rgbw = function (Ri, Gi, Bi) {
-
-  tM = Math.max(Ri, Math.max(Gi, Bi));
-
-  //If the maximum value is 0, immediately return pure black.
-  if(tM == 0)
-    return { r:0, g:0, b:0, w:0 };
-
-  //This section serves to figure out what the color with 100% hue is
-  multiplier = 255.0 / tM;
-  hR = Ri * multiplier;
-  hG = Gi * multiplier;
-  hB = Bi * multiplier;
-
-  //This calculates the Whiteness (not strictly speaking Luminance) of the color
-  M = Math.max(hR, Math.max(hG, hB));
-  m = Math.min(hR, Math.min(hG, hB));
-  Luminance = ((M + m) / 2.0 - 127.5) * (255.0/127.5) / multiplier;
-
-  //Calculate the output values
-  Wo = Luminance;
-  Bo = Bi - Luminance;
-  Ro = Ri - Luminance;
-  Go = Gi - Luminance;
-
-  //Trim them so that they are all between 0 and 255
-  Ro = Math.max(0, Ro);
-  Go = Math.max(0, Go);
-  Bo = Math.max(0, Bo);
-  Wo = Math.max(0, Wo);
-
-  Ro = Math.min(255, Ro);
-  Go = Math.min(255, Go);
-  Bo = Math.min(255, Bo);
-  Wo = Math.min(255, Wo);
-
-
-  return { r:Ro, g:Go, b:Bo, w:Wo };
 };
 
 const rgbw2rgb = function (Ri, Gi, Bi, Wi) {
