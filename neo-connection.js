@@ -98,8 +98,22 @@ class NeoConnection {
       });
     }
 
-    isHeating(id) { return this.deviceData[id].HEATING; }
-    isStandby(id) { return this.deviceData[id].STANDBY; }
+    isHeating(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for current heating status before exists for id",id);
+            this.refreshData();
+            return;
+        }
+        return this.deviceData[id].HEATING;
+    }
+    isStandby(id) {
+        if (!this.deviceData[id]) {
+            this.log.error("Asking for current standby status before exists for id",id);
+            this.refreshData();
+            return;
+        }
+        return this.deviceData[id].STANDBY;
+    }
 
     setStandby(id, standby) {
         if (this.isStandby(id) == standby) return;

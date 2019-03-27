@@ -58,7 +58,7 @@ class LutronRgbwAdapter extends OmnisciaAdapter {
         this.deviceConnection.setDmxLevel(this.rId, Math.round(colors.r/255*DEVICE_RGBW_MAX));
         this.deviceConnection.setDmxLevel(this.gId, Math.round(colors.g/255*DEVICE_RGBW_MAX));
         this.deviceConnection.setDmxLevel(this.bId, Math.round(colors.b/255*DEVICE_RGBW_MAX));
-        //if (this.wId)
+        if (this.wId)
             this.deviceConnection.setDmxLevel(this.wId, Math.round(colors.w/255*DEVICE_RGBW_MAX));
     }
 
@@ -110,12 +110,57 @@ const rgb2hsv = function (red, green, blue) {
   return { h:hue, s:saturation, v:value };
 };
 
+const hsi2rgbw = function (H, S, I) {
+	let rgbw = {}, cos_h, cos_1047_h;
+
+	H = H % 360;
+	H = Math.PI * H / 180;
+
+        S = S / 100.0;
+        I = I / 100.0;
+
+	S = S > 0 ? (S < 1 ? S : 1) : 0;
+	I = I > 0 ? (I < 1 ? I : 1) : 0;
+
+	if(H < 2.09439) {
+	    cos_h = Math.cos(H);
+	    cos_1047_h = Math.cos(1.047196667 - H);
+	    rgbw.r = S * 255 * I / 3 * (1 + cos_h / cos_1047_h);
+	    rgbw.g = S * 255 * I / 3 * (1 + (1 - cos_h / cos_1047_h));
+	    rgbw.b = 0;
+	    rgbw.w = 255 * (1 - S) * I;
+	} else if(H < 4.188787) {
+	    H = H - 2.09439;
+	    cos_h = Math.cos(H);
+	    cos_1047_h = Math.cos(1.047196667 - H);
+	    rgbw.r = 0;
+	    rgbw.g = S * 255 * I / 3 * (1 + cos_h / cos_1047_h);
+	    rgbw.b = S * 255 * I / 3 * (1 + (1 - cos_h / cos_1047_h));
+	    rgbw.w = 255 * (1 - S) * I;
+	} else {
+	    H = H - 4.188787;
+	    cos_h = Math.cos(H);
+	    cos_1047_h = Math.cos(1.047196667 - H);
+	    rgbw.r = S * 255 * I / 3 * (1 + (1 - cos_h / cos_1047_h));
+	    rgbw.g = 0;
+	    rgbw.b = S * 255 * I / 3 * (1 + cos_h / cos_1047_h);
+	    rgbw.w = 255 * (1 - S) * I;
+	}
+
+	rgbw.r = +rgbw.r.toFixed(0);
+	rgbw.g = +rgbw.g.toFixed(0);
+	rgbw.b = +rgbw.b.toFixed(0);
+	rgbw.w = +rgbw.w.toFixed(0);
+
+	return {r: rgbw.r, g: rgbw.g, b: rgbw.b, w: rgbw.w};
+};
+
 const hsv2rgbw = function (h, s, v) {
     v = v / 100.0;
 
     let r, g, b, w;
     let C, Z = 0;
-
+/*
     if ( s >= 50 ) {
         C = 100 * v;
         w = v * (200 - 2*s);
@@ -123,6 +168,9 @@ const hsv2rgbw = function (h, s, v) {
         C = 2 * s * v;
         w = v * 100;
     }
+*/
+    C = s * v;
+    w = v * 100 - C;
 
     if ( h < 60 ) {
         r = C;

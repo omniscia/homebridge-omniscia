@@ -21,8 +21,8 @@ class LutronConnection {
     static getInstance(log, host, port, username, password) {
         host = host || '192.168.0.75';
         port = port || 23;
-        username = username || 'lutron';
-        password = password || 'lutron';
+        username = username || 'default';
+        password = password || 'default';
 
         let instanceKey = host + '-' + port + '-' + username + '-' + new Buffer(password).toString('base64');
 
