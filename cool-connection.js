@@ -96,8 +96,8 @@ class CoolConnection {
     }
 
     isFilterOk(id) { return this.deviceData[id].filterOk; }
-    isOn(id) { this.deviceData[id].isOn; }
-    getOperationMode(id) { this.deviceData[id].operationMode; }
+    isOn(id) { return this.deviceData[id].isOn; }
+    getOperationMode(id) { return this.deviceData[id].operationMode; }
 
     isCooling(id) { return this.deviceData[id].operationMode == "Cool" && this.deviceData[id].isOn; };
     isStandby(id) { return !this.isCooling(id); }

@@ -267,19 +267,15 @@ const hsv2rgb = function (h, s, v) {
 };
 
 const rgbw2rgb = function (Ri, Gi, Bi, Wi) {
-  Ro = Math.min(255, Ri + Wi);
-  Go = Math.min(255, Gi + Wi);
-  Bo = Math.min(255, Bi + Wi);
-  Wo = Math.min(255, Wi + Wi);
+  const Ro = Math.min(255, Ri + Wi);
+  const Go = Math.min(255, Gi + Wi);
+  const Bo = Math.min(255, Bi + Wi);
 
-  return { r:Ro, g:Go, b:Bo };
+  return { r: Ro, g: Go, b: Bo };
 }
 
 const rgbw2hsv = function (r, g, b, w) {
-  if ( w == null )
-      rgb = {r:r, g:g, b:b};
-  else
-      rgb = rgbw2rgb(r, g, b, w);
+  const rgb = w == null ? { r, g, b } : rgbw2rgb(r, g, b, w);
 
   return rgb2hsv(rgb.r, rgb.g, rgb.b);
 };
