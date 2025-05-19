@@ -22,6 +22,6 @@ class NeoPlugAdapter extends OmnisciaAdapter {
         this.bindCharacteristic(switchService, Characteristic.On, this.getOn, this.setOn, "On");
     }
     
-    getOn() { this.deviceConnection.isPlugOn(this.id);  }
+    getOn() { return this.deviceConnection.isPlugOn(this.id); }
     setOn (val) { this.deviceConnection.setPlugOn(this.id, val); } ;
 };

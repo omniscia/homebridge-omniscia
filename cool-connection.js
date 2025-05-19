@@ -26,7 +26,7 @@ class CoolConnection {
         username = username || '';
         password = password || '';
 
-        let instanceKey = host + '-' + port + '-' + username + '-' + new Buffer(password).toString('base64');
+        let instanceKey = host + '-' + port + '-' + username + '-' + Buffer.from(password).toString('base64');
 
         if (!ConnectionInstances[instanceKey]) {
             log.warn("CREATE CON>>" + instanceKey + "<<");
