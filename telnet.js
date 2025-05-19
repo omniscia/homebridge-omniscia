@@ -28,7 +28,7 @@ class TelnetConnection extends EventEmitter {
     }
 
     static getInstance(log, host, port, username, password, prompt, handlers) {
-        let instanceKey = host + '-' + port + '-' + username + '-' + new Buffer(password).toString('base64');
+        let instanceKey = host + '-' + port + '-' + username + '-' + Buffer.from(password).toString('base64');
 
         if (!TelnetConnectionInstances[instanceKey]) {
             log.warn("CREATE CONNECTION>>" + instanceKey + "<<");

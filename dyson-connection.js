@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 const crypto = require('crypto');
 const Promise = require('promise');
+var TelnetConnection = require('./telnet.js');
 
 'use strict';
 
@@ -27,7 +28,7 @@ class DysonConnection {
             swingEnabled: "disabled"
         };
 
-        this.connection =  this.setupConnection(host, usdrname, password);
+        this.connection =  this.setupConnection(log, host, username, password);
 
         this.jsonReadBuffer = '';
         this.telnetConnection = TelnetConnection.getInstance(log, host, port, username, password, '',
@@ -41,7 +42,7 @@ class DysonConnection {
         username = username || '';
         password = password || '';
 
-        let instanceKey = host + '-' + port + '-' + username + '-' + new Buffer(password).toString('base64');
+        let instanceKey = host + '-' + port + '-' + username + '-' + Buffer.from(password).toString('base64');
 
         if (!ConnectionInstances[instanceKey]) {
             log.warn("CREATE CON>>" + instanceKey + "<<");
@@ -56,7 +57,7 @@ class DysonConnection {
 
     sendCommand(command) {
         this.log.warn("WRITING>>" + JSON.stringify(command) + "<<");
-        this.telnetConnection.send(JSON.stringify(command) + new Buffer([0]));
+        this.telnetConnection.send(JSON.stringify(command) + Buffer.from([0]));
     }
 
     setValue(id, setting, value) {
@@ -123,7 +124,7 @@ class DysonConnection {
         });
 
         connection.on('connect', function () {
-            log.warn('(MQTT) Connected to ' + config.host)
+            log.warn('(MQTT) Connected to ' + host)
             connection.subscribe(self.mqttStatusChannel);
             self.requestCurrentState();
         });
@@ -137,13 +138,13 @@ class DysonConnection {
             log.warn("(MQTT) Message is: " + message);
 
             if (topic === self.mqttStatusChannel) {
-                parseMessage(log, self, message);
+                self.parseMessage(log, self, message);
             }
         });
     }
 
     parseMessage(log, self, message) {
-        status = JSON.parse(message.toString());
+        const status = JSON.parse(message.toString());
 
         // 2997 - 2731.5
         if (status.msg === 'ENVIRONMENTAL-CURRENT-SENSOR-DATA') {
@@ -186,7 +187,6 @@ class DysonConnection {
              }
 
              return;
-         });
      }
 
 

@@ -24,7 +24,7 @@ class NeoConnection {
         username = username || '';
         password = password || '';
 
-        let instanceKey = host + '-' + port + '-' + username + '-' + new Buffer(password).toString('base64');
+        let instanceKey = host + '-' + port + '-' + username + '-' + Buffer.from(password).toString('base64');
 
         if (!ConnectionInstances[instanceKey]) {
             log.warn("CREATE CON>>" + instanceKey + "<<");
@@ -39,7 +39,7 @@ class NeoConnection {
 
     sendCommand(command) {
         this.log.warn("WRITING>>" + JSON.stringify(command) + "<<");
-        this.telnetConnection.send(JSON.stringify(command) + new Buffer([0]));
+        this.telnetConnection.send(JSON.stringify(command) + Buffer.from([0]));
     }
 
     setValue(id, setting, value) {
